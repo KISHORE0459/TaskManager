@@ -2,6 +2,7 @@
 import { addtask as addtaskservice } from "../_services/service";
 import { useState } from "react";
 import { MdDelete } from "react-icons/md";
+import { toast } from "react-hot-toast";
 
 const AddTask = () => {
   const [taskname, setTaskname] = useState("");
@@ -20,8 +21,31 @@ const AddTask = () => {
     setTasklist((state) => state.filter((st) => st.id !== id));
   }
 
-  function submittask() {
-    addtaskservice({ TaskName: taskname, Tasks: tasklist, CompletedTask: [] });
+  async function submittask() {
+    try {
+      await addtaskservice({
+        TaskName: taskname,
+        Tasks: tasklist,
+        CompletedTask: [],
+      });
+      await setTaskname("");
+      await setTask("");
+      await setTasklist("");
+
+      toast.success("Task Added Sucessfully !", {
+        duration: 2000,
+        position: "top-center",
+        icon: "✅",
+        removeDelay: 1000,
+      });
+    } catch {
+      toast.error("Error in Adding Task", {
+        duration: 2000,
+        position: "top-center",
+        icon: "❌",
+        removeDelay: 1000,
+      });
+    }
   }
 
   return (
@@ -41,6 +65,11 @@ const AddTask = () => {
             value={taskname}
             onChange={(e) => {
               setTaskname(e.target.value);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                document.getElementById("tasklist").focus();
+              }
             }}
             className="w-[350px] p-1 rounded outline-none text-black text-[18px]"
           />

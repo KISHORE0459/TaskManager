@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const page = async () => {
   return (
-    <div className="w-full flex justify-center items-center my-[45px]">
+    <div className="w-full h-auto flex justify-center items-center my-[45px]">
       <div className="text-black flex flex-col gap-3 w-full h-full justify-center items-center">
         <h2 className="font-bold text-2xl text-white">
           Create and Manage Your Tasks
