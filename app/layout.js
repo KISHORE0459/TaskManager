@@ -1,9 +1,9 @@
 import Nav from "./_components/Nav";
 import "./globals.css";
-import { Kalam } from "next/font/google";
+import { Tilt_Neon } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 
-const font = Kalam({
+const font = Tilt_Neon({
   weight: ["400"],
   subset: ["latin"],
 });

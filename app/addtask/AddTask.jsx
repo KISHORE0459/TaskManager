@@ -1,13 +1,26 @@
 "use client";
 import { addtask as addtaskservice } from "../_services/service";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { toast } from "react-hot-toast";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { getCurrentDate } from "../_services/utils";
+import { convertDate } from "../_services/utils";
 
 const AddTask = () => {
+  //task states
   const [taskname, setTaskname] = useState("");
   const [task, setTask] = useState("");
   const [tasklist, setTasklist] = useState([]);
+  //data state
+  const [selecteddate, setSelectedDate] = useState(null);
+  const [deadline, setDeadline] = useState(null);
+
+  useEffect(() => {
+    setDeadline(convertDate(new Date()));
+    setSelectedDate(new Date());
+  }, []);
 
   function addtask() {
     if (task.length > 0) {
@@ -23,14 +36,32 @@ const AddTask = () => {
 
   async function submittask() {
     try {
+      if (taskname.length <= 0) {
+        toast.error("Please Enter Task Name !", {
+          duration: 2000,
+          position: "top-center",
+          removeDelay: 1000,
+        });
+        return;
+      }
+      if (tasklist.length <= 0) {
+        toast.error("Please Enter Some Tasks !", {
+          duration: 2000,
+          position: "top-center",
+          removeDelay: 1000,
+        });
+        return;
+      }
       await addtaskservice({
         TaskName: taskname,
         Tasks: tasklist,
         CompletedTask: [],
+        deadline: deadline,
       });
       await setTaskname("");
       await setTask("");
-      await setTasklist("");
+      await setTasklist([]);
+      await setSelectedDate(getCurrentDate);
 
       toast.success("Task Added Sucessfully !", {
         duration: 2000,
@@ -117,9 +148,26 @@ const AddTask = () => {
                 </div>
               ))}
           </div>
+          <div className="w-full flex flex-col gap-y-2">
+            <label htmlFor="tasklist" className="text-[20px]">
+              Dead Line
+            </label>
+            <div>
+              <DatePicker
+                selected={selecteddate}
+                dateFormat={"dd/MM/yyyy"}
+                minDate={new Date()}
+                onChange={(date) => {
+                  setSelectedDate(date);
+                  setDeadline(convertDate(date));
+                }}
+                className="bg-gray-500 p-1 rounded"
+              />
+            </div>
+          </div>
         </div>
 
-        <button className="w-fit p-2 border-2 border-white rounded bg-gray-900">
+        <button className="w-fit p-2 border-2 border-white rounded bg-gray-900 mt-3">
           Submit Task
         </button>
       </form>
